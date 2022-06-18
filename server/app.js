@@ -12,8 +12,15 @@ app.use(bodyParser.urlencoded({ extended: false }))
 /**
  * 跨域请求配置
  */
-const cors=require('cors')
+const cors = require('cors')
 app.use(cors())
+
+/**
+ * 用户相关接口
+ */
+const userRouter = require('./router/user');
+app.use('/api/v1/user', userRouter)
+
 
 
 app.listen(3000, () => {
