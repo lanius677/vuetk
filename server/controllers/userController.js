@@ -5,18 +5,22 @@ const db = require('../config/db')
 
  */
 exports.registerController = (req, res) => {
+  //判断用户或密码是否为空
+  let { userName, passWord } = req.body;
+  if (!userName || !passWord) {
+    return res.send({ code: 1, message: '用户名或密码不能为空' })
+  }
 
-  const sql = "INSERT INTO user (name,pwd,head_img) VALUE ('lqq','123','https://xd-video-pc-img.oss-cn-beijing.aliyuncs.com/xdclass_pro/default/head_img/19.jpeg')"
-
-  
-  db.query(sql, (err, results) => {
+  //用户名查重的逻辑
+  const userSelectSql = 'SELECT * FROM user WHERE NAME=?'
+  db.query(userSelectSql, userName, (err, result) => {
     if (err) {
-      return res.send({ code: 400, message: err.message })
+      return res.send({ code: 1, message: err.message })
     }
-    return res.send({
-      code: 200,
-      data: '注册成功'
-    })
+   // 判断用户是否在数据库中存在
+   if(result.length>0){
+    console.log(result);
+   return res.send({code:1,message:'用户名已经存在'})
+   }
   })
-
 }
