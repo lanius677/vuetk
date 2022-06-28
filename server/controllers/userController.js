@@ -1,5 +1,7 @@
 const db = require('../config/db')
 const bcrypt=require('bcryptjs')
+const jwt=require('jsonwebtoken')
+const {jwtSecretKey}=require('../config/jwtSecretKey')
 
 /**
  * 注册接口逻辑
@@ -86,8 +88,20 @@ exports.loginController = (req, res) => {
     return  res.send({code:1,message:'密码错误'})
     }
 
-    return res.send({code:0,message:'登录成功'})
+    const user={...results[0],pwd:''}
+    const token=jwt.sign(user,jwtSecretKey,{expiresIn:'5s'})
+
+    
+    return res.send({code:0,message:'登录成功',token:'bearer '+token})
 
   })
 
 }
+
+/**
+ * 用户信息查询逻辑
+ */
+exports.userInfoController=(req,res)=>{
+
+}
+

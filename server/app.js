@@ -16,6 +16,15 @@ const cors = require('cors')
 app.use(cors())
 
 /**
+ * 解析中间件校验是否正确，哪些接口需要token校验
+ */
+const { expressjwt: jwt } =require('express-jwt')
+const {jwtSecretKey} = require('./config/jwtSecretKey')
+
+const unlessPath={path:['/api/v1/user/login','/api/v1/user/register']}
+app.use(jwt({secret:jwtSecretKey,algorithms:['HS256']}).unless(unlessPath))
+
+/**
  * 用户相关接口
  */
 const userRouter = require('./router/user');
@@ -29,6 +38,10 @@ app.use((err,req,res,next)=>{
   //表单的用户信息校验失败
   if(err instanceof joi.ValidationError){
     return res.send({code:1,message:err.message})
+  }
+
+  if(err.name==='UnauthorizedError'){
+    res.send({code:1,message:'身份谁失败'})
   }
 
   // 其他的错误
