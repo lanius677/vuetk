@@ -1,4 +1,5 @@
 const db = require('../config/db')
+const bcrypt=require('bcryptjs')
 
 /**
  * 注册接口逻辑
@@ -43,17 +44,50 @@ exports.registerController = (req, res) => {
     'https://xd-video-pc-img.oss-cn-beijing.aliyuncs.com/xdclass_pro/default/head_img/9.jpeg']
 
   const num = Math.floor(Math.random() * 10 + 1)
-  
 
+  /**
+   * 用户注册的逻辑
+   */
   const userInsertSql = 'INSERT INTO user (name,pwd,head_img) VALUE (?,?,?)'
-  db.query(userInsertSql,[userName,passwrodB,imgList[num]],(err,result)=>{
+  db.query(userInsertSql, [userName, passwrodB, imgList[num]], (err, result) => {
     console.log(userName);
     console.log(passwrodB);
-    if(err){
-     return res.send({code:1,message:err.message})
+    if (err) {
+      return res.send({ code: 1, message: err.message })
     }
-    
-  return res.send({code:0,message:'注册成功'})
+
+    return res.send({ code: 0, message: '注册成功' })
+  })
+
+
+
+}
+
+/**
+ * 登录接口逻辑
+ */
+exports.loginController = (req, res) => {
+  let { userName, passWord } = req.body
+  const userSelectSql = 'SELECT * FROM user WHERE name=?'
+  db.query(userSelectSql,userName,(err,results)=>{
+    //错误返回
+    if(err){
+    return  res.send({code:1,message:err.message})
+    }
+
+    //账号不存在
+    if(results.length===0){
+      return res.send({code:1,message:'账号不存在,请先注册。'})
+    }
+
+    //判断密码是否正确
+    const compareState=bcrypt.compareSync(passWord,results[0].pwd)
+    if(!compareState){
+    return  res.send({code:1,message:'密码错误'})
+    }
+
+    return res.send({code:0,message:'登录成功'})
+
   })
 
 }

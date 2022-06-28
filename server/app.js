@@ -21,6 +21,19 @@ app.use(cors())
 const userRouter = require('./router/user');
 app.use('/api/v1/user', userRouter)
 
+/**
+ * 错误中间件
+ */
+const joi=require('joi')
+app.use((err,req,res,next)=>{
+  //表单的用户信息校验失败
+  if(err instanceof joi.ValidationError){
+    return res.send({code:1,message:err.message})
+  }
+
+  // 其他的错误
+  res.send({code:1,message:err.message})
+})
 
 
 app.listen(3000, () => {
