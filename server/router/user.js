@@ -16,6 +16,11 @@ router.post('/register', expressJoi(userCkeck), userController.registerControlle
  */
  router.post('/login', expressJoi(userCkeck), userController.loginController)
 
+ /**
+ * 用户信息查询接口
+ */
+  router.get('/userInfo',userController.userInfoController)
+
 
 
 module.exports = router

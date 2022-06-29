@@ -1,7 +1,7 @@
 const db = require('../config/db')
-const bcrypt=require('bcryptjs')
-const jwt=require('jsonwebtoken')
-const {jwtSecretKey}=require('../config/jwtSecretKey')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const { jwtSecretKey } = require('../config/jwtSecretKey')
 
 /**
  * 注册接口逻辑
@@ -71,28 +71,27 @@ exports.registerController = (req, res) => {
 exports.loginController = (req, res) => {
   let { userName, passWord } = req.body
   const userSelectSql = 'SELECT * FROM user WHERE name=?'
-  db.query(userSelectSql,userName,(err,results)=>{
+  db.query(userSelectSql, userName, (err, results) => {
     //错误返回
-    if(err){
-    return  res.send({code:1,message:err.message})
+    if (err) {
+      return res.send({ code: 1, message: err.message })
     }
 
     //账号不存在
-    if(results.length===0){
-      return res.send({code:1,message:'账号不存在,请先注册。'})
+    if (results.length === 0) {
+      return res.send({ code: 1, message: '账号不存在,请先注册。' })
     }
 
     //判断密码是否正确
-    const compareState=bcrypt.compareSync(passWord,results[0].pwd)
-    if(!compareState){
-    return  res.send({code:1,message:'密码错误'})
+    const compareState = bcrypt.compareSync(passWord, results[0].pwd)
+    if (!compareState) {
+      return res.send({ code: 1, message: '密码错误' })
     }
 
-    const user={...results[0],pwd:''}
-    const token=jwt.sign(user,jwtSecretKey,{expiresIn:'5s'})
+    const user = { ...results[0], pwd: '' }
+    const token = jwt.sign(user, jwtSecretKey, { expiresIn: '48h' })
 
-    
-    return res.send({code:0,message:'登录成功',token:'bearer '+token})
+    return res.send({ code: 0, message: '登录成功', token: 'Bearer ' + token })
 
   })
 
@@ -101,7 +100,18 @@ exports.loginController = (req, res) => {
 /**
  * 用户信息查询逻辑
  */
-exports.userInfoController=(req,res)=>{
-
+exports.userInfoController = (req, res) => {
+  //获取token
+  const token = req.headers.authorization
+  //解析token获取用户数据
+  //token.split('Bearer ')[1] 切割成数组 ['Bearer','token']
+  const userInfo = jwt.verify(token.split('Bearer ')[1], jwtSecretKey)
+  return res.send({
+    code: 0,
+    data: {
+      name: userInfo.name,
+      headimg: userInfo.head_img
+    }
+  })
 }
 
