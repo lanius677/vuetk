@@ -9,3 +9,29 @@ exports.userCkeck = {
     passWord
   }
 }
+
+//课程查询参数检验规则
+const category = joi.string().required()
+const page = joi.number().integer().required()
+const size = joi.number().integer().required()
+
+exports.findCourseCheck = {
+  query: {
+    category,
+    page,
+    size
+  }
+}
+
+//课程修改参数检验规则
+const title = joi.string()
+const price = joi.number()
+const id = joi.number().integer().required()
+
+exports.updateCourseCheck = {
+  query: {
+    title,
+    price,
+    id
+  }
+}

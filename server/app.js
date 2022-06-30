@@ -30,6 +30,12 @@ const userRouter = require('./router/user');
 app.use('/api/v1/user', userRouter)
 
 /**
+ * 课程相关接口
+ */
+ const courseRouter = require('./router/course');
+ app.use('/api/v1/course',courseRouter)
+
+/**
  * 错误中间件
  */
 const joi = require('joi')
