@@ -35,3 +35,10 @@ exports.updateCourseCheck = {
     id
   }
 }
+
+//课程删除参数检验规则
+exports.deleteCourseCheck = {
+  query: {
+    id
+  }
+}
