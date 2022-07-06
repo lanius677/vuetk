@@ -3,9 +3,16 @@
     <div class="bgp" />
     <div class="login-container">
       <h1>vuetk课程管理系统</h1>
-      <el-form class="login-form">
-        <el-form-item>
-          <el-input placeholder="请输入用户名">
+      <el-form
+        class="login-form"
+        :model="userInfo"
+        :rules="rules"
+        @keyup.enter="onLogin"
+        ref="ref_form"
+      >
+        <!-- 用户名区域 -->
+        <el-form-item prop="userName">
+          <el-input placeholder="请输入用户名" v-model.trim="userInfo.userName">
             <template #prepend>
               <el-icon>
                 <avatar />
@@ -13,8 +20,15 @@
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input placeholder="请输入密码" show-password>
+
+        <!-- 密码区域 -->
+        <el-form-item prop="passWord">
+          <el-input
+            type="password"
+            placeholder="请输入密码"
+            show-password
+            v-model="userInfo.passWord"
+          >
             <template #prepend>
               <el-icon>
                 <key />
@@ -22,14 +36,68 @@
             </template>
           </el-input>
         </el-form-item>
-        <el-button type="primary" class="login-submit">登录</el-button>
-        <div class="login-register">去注册</div>
+
+        <!-- button区域 -->
+        <el-button type="primary" class="login-submit" @click="onLogin">登录</el-button>
+        <div class="login-register" @click="toGo">去注册</div>
       </el-form>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { reactive, ref } from "vue";
+import router from "../router/index";
+/**
+ * 初始ref
+ */
+const ref_form = ref(null);
+
+/**
+ * 表单的数据声明
+ */
+const userInfo = reactive({
+  userName: "",
+  passWord: "",
+});
+
+/**
+ * 表单数据校验规则
+ */
+const rules = {
+  userName: [{ required: "true", trigger: "blur", message: "用户名不能为空" }],
+  passWord: [{ required: "true", trigger: "blur", message: "密码不能为空" }],
+};
+
+/**
+ * 登录的方法
+ */
+const onLogin = () => {
+  ref_form.value.validate((val) => {
+    if (val) {
+      getLoginData();
+    }
+  });
+};
+
+/**
+ * 登录的接口
+ */
+const getLoginData = () => {
+  localStorage.setItem("token", 1);
+  ElMessage({
+    message: "登录成功",
+    type: "success",
+  });
+  router.push("/home");
+};
+/**
+ * 跳转到注册页面
+ */
+const toGo = () => {
+  router.push("/register");
+};
+</script>
 
 <style lang="less" scoped>
 @-webkit-keyframes fadenum {
