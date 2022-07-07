@@ -81,6 +81,13 @@ const onLogin = () => {
 };
 
 /**
+ * 跳转到注册页面
+ */
+const toGo = () => {
+  router.push("/register");
+};
+
+/**
  * 登录的接口
  */
 const getLoginData = () => {
@@ -91,12 +98,7 @@ const getLoginData = () => {
   });
   router.push("/home");
 };
-/**
- * 跳转到注册页面
- */
-const toGo = () => {
-  router.push("/register");
-};
+
 </script>
 
 <style lang="less" scoped>
