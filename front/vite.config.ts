@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+const { path } = require('path');
 
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
@@ -16,5 +17,11 @@ export default defineConfig({
     Components({
       dts: './src/components.d.ts',
       resolvers: [ElementPlusResolver()],
-    }),]
+    })],
+  // 配置路径别名
+  resolve: {
+    alias: {
+      '/@/': path(__dirname, 'src'),
+    },
+  },
 })
