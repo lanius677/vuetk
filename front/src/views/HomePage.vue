@@ -19,5 +19,22 @@ import Aside from "@/components/Aside.vue";
 <style lang="less" scoped>
 .el-aside {
   width: auto;
+  background-color: #545c64;
+  overflow: hidden;
 }
+
+.el-container{
+  height: 100vh;
+}
+
+.el-main{
+  display: flex;
+}
+
+.el-header{
+  background-color: #fff;
+}
+
+
+
 </style>
