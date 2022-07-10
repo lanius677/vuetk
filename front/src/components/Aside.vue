@@ -5,6 +5,7 @@
     active-text-color="#ffd04b"
     background-color="#545c64"
     text-color="white"
+    :collapse="isCollapse"
   >
     <div class="tk-icon">
       <img src="../../public/favicon.ico" />
@@ -37,7 +38,11 @@
   </el-menu>
 </template>
 
-<script setup></script>
+<script setup>
+import { defineProps } from "vue";
+
+const { isCollapse } = defineProps(["isCollapse"]);
+</script>
 
 <style lang="less" scoped>
 .el-radio-button__inner {
