@@ -1,13 +1,20 @@
 <template>
   <div class="main">
     <div>搜索框</div>
-    <Table :list="data.list"></Table>
+    <Table :list="data.list" :editClick="editClick"></Table>
   </div>
+  <EditPop
+    :popShow="popShow"
+    v-if="popShow"
+    :message="courseItemState.message"
+    :confirmClick="confirmClick"
+  ></EditPop>
 </template>
 
 <script setup>
 import Table from "@/components/Table.vue";
-import { reactive } from "@vue/reactivity";
+import { reactive, ref } from "@vue/reactivity";
+import EditPop from "@/components/EditPop.vue";
 const data = reactive({
   list: [
     {
@@ -57,6 +64,48 @@ const data = reactive({
     },
   ],
 });
+
+/**
+ * 编辑相关的逻辑
+ */
+//编辑的数据
+const courseItemState = reactive({
+  message: {},
+});
+
+//控制编辑器弹窗的展示变量
+const popShow = ref(false);
+//控制编辑器弹窗的展示方法
+const isShowPop = (show) => {
+  popShow.value = show;
+};
+
+//编辑的按钮
+const editClick = (val) => {
+  isShowPop(true);
+  courseItemState.message = val;
+};
+
+//取消和确认按钮的逻辑
+const confirmClick = (val) => {
+  if (val === "cancel") {
+    isShowPop(false);
+  } else if (
+    val.title !== courseItemState.message.title ||
+    val.price == courseItemState.message.price
+  ) {
+    data.list.map((item) => {
+      if (item.id === val.id) {
+        item.title = val.title;
+        item.price = val.price;
+      }
+    });
+
+    //修改接口的调用 未完成
+  }else{
+    ElMessage
+  }
+};
 </script>
 
 <style lang="less" scoped>

@@ -15,7 +15,7 @@
 
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button type="primary">编辑</el-button>
+          <el-button type="primary" @click="editClick(scope.row)">编辑</el-button>
           <el-popconfirm title="确认是否要删除？">
             <template #reference>
               <el-button type="danger">Delete</el-button>
@@ -29,7 +29,7 @@
 
 <script setup>
 import { defineProps } from "vue";
-const { list } = defineProps(["list"]);
+const { list, editClick } = defineProps(["list", "editClick"]);
 
 /**
  * 定义每行课程的区分颜色
