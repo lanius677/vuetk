@@ -1,7 +1,10 @@
 <template>
   <div class="main">
     <div>搜索框</div>
-    <Table :list="data.list" :editClick="editClick"></Table>
+    <Table :list="data.list" 
+    :editClick="editClick" 
+    :deleteHandle="deleteHandle">
+    </Table>
   </div>
   <EditPop
     :popShow="popShow"
@@ -111,6 +114,19 @@ const confirmClick = (val) => {
       message: "没有发现更改的内容",
       type: "warning",
     });
+  }
+};
+
+/**
+ * 课程删除的逻辑
+ */
+const deleteHandle = (val) => {
+  if (val) {
+    data.list = data.list.filter((item) => {
+      return item.id !== val;
+    });
+
+    //删除接口的调用 未完成
   }
 };
 </script>
