@@ -91,8 +91,9 @@ const confirmClick = (val) => {
   if (val === "cancel") {
     isShowPop(false);
   } else if (
+    //更改对应的课程的title和price
     val.title !== courseItemState.message.title ||
-    val.price == courseItemState.message.price
+    val.price !== courseItemState.message.price
   ) {
     data.list.map((item) => {
       if (item.id === val.id) {
@@ -100,10 +101,16 @@ const confirmClick = (val) => {
         item.price = val.price;
       }
     });
+    //关闭弹窗
+    isShowPop(false);
 
     //修改接口的调用 未完成
-  }else{
-    ElMessage
+  } else {
+    ElMessage({
+      showClose: true,
+      message: "没有发现更改的内容",
+      type: "warning",
+    });
   }
 };
 </script>
