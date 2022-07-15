@@ -1,10 +1,14 @@
 <template>
   <div class="main">
-    <div>搜索框</div>
-    <Table :list="data.list" 
-    :editClick="editClick" 
-    :deleteHandle="deleteHandle">
+    <el-form>
+      <el-form-item>
+        <el-input v-model.trim="inputValue" placeholder="请输入内容"></el-input>
+        <el-button type="primary" @click="handleClick">查询</el-button>
+      </el-form-item>
+    </el-form>
+    <Table :list="courseList" :editClick="editClick" :deleteHandle="deleteHandle">
     </Table>
+  
   </div>
   <EditPop
     :popShow="popShow"
@@ -16,7 +20,7 @@
 
 <script setup>
 import Table from "@/components/Table.vue";
-import { reactive, ref } from "@vue/reactivity";
+import { reactive, ref, computed } from "vue";
 import EditPop from "@/components/EditPop.vue";
 const data = reactive({
   list: [
@@ -127,6 +131,31 @@ const deleteHandle = (val) => {
     });
 
     //删除接口的调用 未完成
+  }
+};
+
+/**
+ * 搜索框的逻辑
+ */
+const inputValue = ref("");
+const courseList = computed(() => {
+  return data.list?.filter((item) => {
+    return item.title.indexOf(inputValue.value) >= 0;
+  });
+});
+
+//搜索的按钮
+const handleClick = () => {
+  if (inputValue.value) {
+    ElMessage({
+      message: "查询成功",
+      type: "success",
+    });
+  } else {
+    ElMessage({
+      message: "请输入搜索内容",
+      type: "error",
+    });
   }
 };
 </script>
