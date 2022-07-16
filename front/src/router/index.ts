@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
     if (localStorage.getItem("token")) {
       next();
     } else {
-      ElMessage.error("请先成功");
+      ElMessage.error("请先登录");
     }
   } else {
     next();
