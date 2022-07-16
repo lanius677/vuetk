@@ -8,20 +8,47 @@
     </el-form>
     <Table :list="courseList" :editClick="editClick" :deleteHandle="deleteHandle">
     </Table>
-  
+    <Pagination :currentChange="currentChange"></Pagination>
   </div>
-  <EditPop
-    :popShow="popShow"
-    v-if="popShow"
-    :message="courseItemState.message"
-    :confirmClick="confirmClick"
-  ></EditPop>
+  <EditPop :popShow="popShow" v-if="popShow" :message="courseItemState.message" :confirmClick="confirmClick"></EditPop>
 </template>
 
 <script setup>
 import Table from "@/components/Table.vue";
 import { reactive, ref, computed } from "vue";
 import EditPop from "@/components/EditPop.vue";
+import Pagination from '@/components/Pagination.vue';
+/**
+ * 分页的逻辑
+ */
+const currentChange = (val) => {
+  //当点击上一页
+  if (val === 'pre') {
+    if (data.page > 1) {
+      data.page--
+    } else {
+      ElMessage({
+        message: '已经是第一页了',
+        type: "warning",
+        showClose: true
+      })
+    }
+  }
+
+  //当点击下一页
+  if (val === 'next') {
+    if (data.page < Math.ceil(data.total / 5)) {
+      data.page++
+    } else {
+      ElMessage({
+        message: '已经是最后一页了',
+        type: "warning",
+        showClose: true
+      })
+    }
+  }
+}
+
 const data = reactive({
   list: [
     {
@@ -70,6 +97,8 @@ const data = reactive({
       title: "22年新版-玩转ECMAScript6零基础到进阶实战es6视频",
     },
   ],
+  page: 1, //默认展示页面数1
+  total: 15, //课程总数
 });
 
 /**
@@ -158,12 +187,16 @@ const handleClick = () => {
     });
   }
 };
+
+
+
 </script>
 
 <style lang="less" scoped>
 .el-form {
   display: flex;
 }
+
 .main {
   background-color: #fff;
   padding: 20px;
@@ -181,6 +214,7 @@ const handleClick = () => {
   position: fixed;
   z-index: 20;
 }
+
 :deep(.el-table__inner-wrapper) {
   overflow: hidden;
 }
