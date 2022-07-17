@@ -50,6 +50,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import router from "../router/index";
+import { getRegister } from "../api/index";
 /**
  * 初始ref
  */
@@ -92,16 +93,22 @@ const toGo = () => {
 /**
  * 注册的接口
  */
-const getRegisterData = () => {
-
+const getRegisterData = async () => {
+  //接口的调用
+  const res = await getRegister({
+    userName: userInfo.userName,
+    passWord: userInfo.passWord,
+  });
 
   //如果注册成功
-  localStorage.setItem("token", 1);
-  ElMessage({
-    message: "注册成功",
-    type: "success",
-  });
-  router.push("/login");
+  if (res?.message) {
+    localStorage.setItem("token", 1);
+    ElMessage({
+      message: "注册成功",
+      type: "success",
+    });
+    router.push("/login");
+  }
 };
 </script>
 

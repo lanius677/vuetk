@@ -13,7 +13,8 @@ const service=axios.create({
  */
 
 service.interceptors.request.use((config)=>{
-  if(config.url.indexof('register')<0 && config.url.indexOf('login')<0){
+  console.log(config);
+  if(config.url.indexOf('register')<0 && config.url.indexOf('login')<0){
     config.headers.authorization=localStorage.getItem('token')
   }
   return config
@@ -40,12 +41,11 @@ service.interceptors.response.use((res)=>{
 /**
  * 封装请求函数
  */
-const requset=(options)=>{
-  if(options.methods==='get'){
+const requset=(option)=>{
+  if(option.method==='GET'){
     options.params=options.data
   }
-
-  return service(options)
+  return service(option)
 }
 
 export default requset
