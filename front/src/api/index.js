@@ -22,3 +22,10 @@ export const getRegister=(data)=>{
 export const getUserInfo=()=>{
   return requset({method:'GET',url:'/api/v1/user/userInfo'})
 }
+
+/**
+ * 课程列表查询接口
+ */
+export const getCourse=(data)=>{
+  return requset({method:'GET',url:'/api/v1/course/find',data})
+}

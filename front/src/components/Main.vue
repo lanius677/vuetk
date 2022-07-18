@@ -10,93 +10,53 @@
     </Table>
     <Pagination :currentChange="currentChange"></Pagination>
   </div>
-  <EditPop :popShow="popShow" v-if="popShow" :message="courseItemState.message" :confirmClick="confirmClick"></EditPop>
+  <EditPop
+    :popShow="popShow"
+    v-if="popShow"
+    :message="courseItemState.message"
+    :confirmClick="confirmClick"
+  ></EditPop>
 </template>
 
 <script setup>
 import Table from "@/components/Table.vue";
-import { reactive, ref, computed } from "vue";
+import { reactive, ref, computed, onMounted } from "vue";
 import EditPop from "@/components/EditPop.vue";
-import Pagination from '@/components/Pagination.vue';
+import Pagination from "@/components/Pagination.vue";
+import { getCourse } from "@/api/index.js";
 /**
  * 分页的逻辑
  */
 const currentChange = (val) => {
   //当点击上一页
-  if (val === 'pre') {
+  if (val === "pre") {
     if (data.page > 1) {
-      data.page--
+      data.page--;
     } else {
       ElMessage({
-        message: '已经是第一页了',
+        message: "已经是第一页了",
         type: "warning",
-        showClose: true
-      })
+        showClose: true,
+      });
     }
   }
 
   //当点击下一页
-  if (val === 'next') {
+  if (val === "next") {
     if (data.page < Math.ceil(data.total / 5)) {
-      data.page++
+      data.page++;
     } else {
       ElMessage({
-        message: '已经是最后一页了',
+        message: "已经是最后一页了",
         type: "warning",
-        showClose: true
-      })
+        showClose: true,
+      });
     }
   }
-}
+};
 
 const data = reactive({
-  list: [
-    {
-      category: "front",
-      courseImg: "https://file.xdclass.net/video/2022/77-QD/cover.jpeg",
-      del: 0,
-      id: 1,
-      point: 9.8,
-      price: "99",
-      title: "22年新版【前端高级工程师】面试专题第一季",
-    },
-    {
-      category: "front",
-      courseImg: "https://file.xdclass.net/video/2022/75-Vue3/cover1.jpeg",
-      del: 0,
-      id: 2,
-      point: 9.5,
-      price: "99",
-      title: "22年新版-零基础玩转vue3+开发仿美团外卖项目vue视频",
-    },
-    {
-      category: "front",
-      courseImg: "https://file.xdclass.net/video/2022/76-webpack5/cover.jpeg",
-      del: 0,
-      id: 3,
-      point: 9.3,
-      price: "59",
-      title: "新版webpack5丨带你玩转时下最流行的构建工具",
-    },
-    {
-      category: "front",
-      courseImg: "https://file.xdclass.net/video/2021/74-git/WechatIMG3026.jpeg",
-      del: 0,
-      id: 4,
-      point: 9.2,
-      price: "39",
-      title: "22年新版-玩转Git零基础到进阶实战 git视频急速入门",
-    },
-    {
-      category: "front",
-      courseImg: "https://file.xdclass.net/video/2021/73-ES6/cover.jpeg",
-      del: 0,
-      id: 5,
-      point: 9.4,
-      price: "49",
-      title: "22年新版-玩转ECMAScript6零基础到进阶实战es6视频",
-    },
-  ],
+  list: [],
   page: 1, //默认展示页面数1
   total: 15, //课程总数
 });
@@ -188,8 +148,31 @@ const handleClick = () => {
   }
 };
 
+/**
+ * 课程列表数据获取和课程类自动切换逻辑
+ */
+const getCourseData = async (query) => {
+  const category = query?.category || 'front';
+  const page = query?.page || 1;
+  const size = query?.size || 5;
 
+  const res = await getCourse({
+    category,
+    page,
+    size,
+  });
+  // console.log("res:",res);
+  console.log(query);
+//筛选符合分类的课程
+  data.list = res?.list.filter((item) => {
+    return item.category === category;
+  });
 
+  data.total = res?.total;
+};
+onMounted(()=>{
+  getCourseData()
+})
 </script>
 
 <style lang="less" scoped>
