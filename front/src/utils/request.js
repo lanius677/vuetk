@@ -5,7 +5,7 @@ import router from '../router/index.ts';
  */
 const service=axios.create({
   baseURL:'http://127.0.0.1:3001',
-  timeout:'3000'
+  timeout:'5000'
 })
 
 /**
@@ -13,7 +13,6 @@ const service=axios.create({
  */
 
 service.interceptors.request.use((config)=>{
-  console.log(config);
   if(config.url.indexOf('register')<0 && config.url.indexOf('login')<0){
     config.headers.authorization=localStorage.getItem('token')
   }
@@ -24,9 +23,10 @@ service.interceptors.request.use((config)=>{
  * 响应拦截
  */
 service.interceptors.response.use((res)=>{
-  const {code,data,message}=res.data
+  console.log(res.data);
+  const {code,message,token,data}=res.data
   if(code===0){
-    return data
+    return {message:message,token:token,data:data}
   }else{
     ElMessage({
       message:message,
@@ -41,11 +41,11 @@ service.interceptors.response.use((res)=>{
 /**
  * 封装请求函数
  */
-const requset=(option)=>{
-  if(option.method==='GET'){
+const requset=(options)=>{
+  if(options.method==='get'){
     options.params=options.data
   }
-  return service(option)
+  return service(options)
 }
 
 export default requset

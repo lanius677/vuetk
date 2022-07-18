@@ -107,7 +107,7 @@ const getRegisterData = async () => {
       message: "注册成功",
       type: "success",
     });
-    router.push("/login");
+    router.push("/");
   }
 };
 </script>

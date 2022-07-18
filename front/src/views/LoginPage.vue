@@ -48,6 +48,7 @@
 <script setup>
 import { reactive, ref } from "vue";
 import router from "../router/index";
+import { getLogin } from "@/api/index";
 /**
  * 初始ref
  */
@@ -90,15 +91,21 @@ const toGo = () => {
 /**
  * 登录的接口
  */
-const getLoginData = () => {
-  localStorage.setItem("token", 1);
-  ElMessage({
-    message: "登录成功",
-    type: "success",
+const getLoginData = async () => {
+  const res = await getLogin({
+    userName: userInfo.userName,
+    passWord: userInfo.passWord,
   });
-  router.push("/home");
-};
 
+  if (res?.token) {
+    localStorage.setItem("token", res?.token);
+    ElMessage({
+      message: "登录成功",
+      type: "success",
+    });
+    router.push("/home");
+  }
+};
 </script>
 
 <style lang="less" scoped>
