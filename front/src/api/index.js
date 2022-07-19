@@ -36,3 +36,10 @@ export const getCourse=(data)=>{
 export const changeCourse=(data)=>{
   return requset({method:'GET',url:'/api/v1/course/update',data})
 }
+
+/**
+ * 课程列表删除接口
+ */
+export const deleteCourse=(data)=>{
+  return requset({method:'GET',url:'/api/v1/course/delete',data})
+}

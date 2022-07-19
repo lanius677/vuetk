@@ -23,7 +23,7 @@ import Table from "@/components/Table.vue";
 import { reactive, ref, computed, onMounted } from "vue";
 import EditPop from "@/components/EditPop.vue";
 import Pagination from "@/components/Pagination.vue";
-import { getCourse, changeCourse } from "@/api/index.js";
+import { getCourse, changeCourse, deleteCourse } from "@/api/index.js";
 import emitter from "@/utils/eventBus.js";
 
 const data = reactive({
@@ -124,8 +124,9 @@ const deleteHandle = (val) => {
     data.list = data.list.filter((item) => {
       return item.id !== val;
     });
-
-    //删除接口的调用 未完成
+    console.log("val", val);
+    //删除接口的调用
+    deleteCourseData(val);
   }
 };
 
@@ -194,6 +195,29 @@ const changeCourseData = async (query) => {
       message: res.message,
       type: "success",
     });
+  }
+};
+
+/**
+ * 课程列表删除的方法
+ */
+const deleteCourseData = async (query) => {
+  console.log("query", query);
+  // 1.从参数中先解析赋值。
+  const id  = query;
+  // 2.调用接口传入参数
+  const res = await deleteCourse({ id });
+  // 3.判断返回值，是否成功
+  if (res?.message) {
+    ElMessage({
+      message: res.message,
+      type: "success",
+    });
+  }
+
+  //当前的页面list清空时，重置跳转到第一页
+  if(data.list.length===0 && data.page>1){
+    getCourseData({category:data.sideCategory,page:1})
   }
 };
 
