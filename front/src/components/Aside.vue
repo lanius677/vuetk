@@ -18,9 +18,9 @@
       </template>
       <el-menu-item-group>
         <template #title><span>课程管理</span></template>
-        <el-menu-item index="1-1">前端课程</el-menu-item>
-        <el-menu-item index="1-2">后端课程</el-menu-item>
-        <el-menu-item index="1-3">全栈课程</el-menu-item>
+        <el-menu-item index="1-1" @click="courseHandle('front')">前端课程</el-menu-item>
+        <el-menu-item index="1-2" @click="courseHandle('back')">后端课程</el-menu-item>
+        <el-menu-item index="1-3" @click="courseHandle('all')">全栈课程</el-menu-item>
       </el-menu-item-group>
     </el-sub-menu>
 
@@ -40,8 +40,16 @@
 
 <script setup>
 import { defineProps } from "vue";
+import emitter from '@/utils/eventBus.js';
 
 const { isCollapse } = defineProps(["isCollapse"]);
+
+/**
+ * 点击类目tab触发课程列表重新获取
+ */
+const courseHandle=(type)=>{
+  emitter.emit('course',type)
+}
 </script>
 
 <style lang="less" scoped>

@@ -24,6 +24,8 @@ import { reactive, ref, computed, onMounted } from "vue";
 import EditPop from "@/components/EditPop.vue";
 import Pagination from "@/components/Pagination.vue";
 import { getCourse } from "@/api/index.js";
+import emitter from '@/utils/eventBus.js';
+
 /**
  * 分页的逻辑
  */
@@ -152,26 +154,37 @@ const handleClick = () => {
  * 课程列表数据获取和课程类自动切换逻辑
  */
 const getCourseData = async (query) => {
+  //1. 先给接口查询参数赋值||赋默认值
   const category = query?.category || 'front';
   const page = query?.page || 1;
   const size = query?.size || 5;
-
+  
+  //2. 把参数传递给接口
   const res = await getCourse({
     category,
     page,
     size,
   });
-  // console.log("res:",res);
-  console.log(query);
+ 
+
 //筛选符合分类的课程
-  data.list = res?.list.filter((item) => {
+//3. 把返回的数组结果进行filter过滤和category对比，然后将过滤结果返回给data.list
+  data.list = res?.data.list.filter((item) => {
     return item.category === category;
   });
 
+//4. 将返回的总数赋值给data
   data.total = res?.total;
 };
 onMounted(()=>{
   getCourseData()
+
+  /**
+   * 监听课程类目tab切换
+   */
+  emitter.con('course',(val)=>{
+
+  })
 })
 </script>
 

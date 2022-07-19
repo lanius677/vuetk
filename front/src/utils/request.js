@@ -23,10 +23,10 @@ service.interceptors.request.use((config)=>{
  * 响应拦截
  */
 service.interceptors.response.use((res)=>{
-  console.log(res);
+  const categoryData=res.config.data
   const {code,message,token,data}=res.data
   if(code===0){
-    return {message:message,token:token,data:data}
+    return {message:message,token:token,data:data,categoryData:categoryData}
   }else{
     ElMessage({
       message:message,
@@ -42,7 +42,7 @@ service.interceptors.response.use((res)=>{
  * 封装请求函数
  */
 const requset=(options)=>{
-  if(options.method==='get'){
+  if(options.method==='GET'){
     options.params=options.data
   }
   return service(options)
