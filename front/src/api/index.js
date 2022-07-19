@@ -29,3 +29,10 @@ export const getUserInfo=()=>{
 export const getCourse=(data)=>{
   return requset({method:'GET',url:'/api/v1/course/find',data})
 }
+
+/**
+ * 课程列表修改接口
+ */
+export const changeCourse=(data)=>{
+  return requset({method:'GET',url:'/api/v1/course/update',data})
+}

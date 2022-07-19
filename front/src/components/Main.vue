@@ -23,8 +23,15 @@ import Table from "@/components/Table.vue";
 import { reactive, ref, computed, onMounted } from "vue";
 import EditPop from "@/components/EditPop.vue";
 import Pagination from "@/components/Pagination.vue";
-import { getCourse } from "@/api/index.js";
-import emitter from '@/utils/eventBus.js';
+import { getCourse, changeCourse } from "@/api/index.js";
+import emitter from "@/utils/eventBus.js";
+
+const data = reactive({
+  list: [],
+  page: 1, //默认展示页面数1
+  total: 15, //默认课程总数
+  sideCategory: "front", //默认课程分类
+});
 
 /**
  * 分页的逻辑
@@ -55,13 +62,9 @@ const currentChange = (val) => {
       });
     }
   }
-};
 
-const data = reactive({
-  list: [],
-  page: 1, //默认展示页面数1
-  total: 15, //课程总数
-});
+  getCourseData({ category: data.sideCategory, page: data.page });
+};
 
 /**
  * 编辑相关的逻辑
@@ -102,7 +105,8 @@ const confirmClick = (val) => {
     //关闭弹窗
     isShowPop(false);
 
-    //修改接口的调用 未完成
+    //修改接口的调用
+    changeCourseData({ title: val.title, price: val.price, id: val.id });
   } else {
     ElMessage({
       showClose: true,
@@ -155,37 +159,54 @@ const handleClick = () => {
  */
 const getCourseData = async (query) => {
   //1. 先给接口查询参数赋值||赋默认值
-  const category = query?.category || 'front';
+  const category = query?.category || data.sideCategory;
   const page = query?.page || 1;
   const size = query?.size || 5;
-  
+
   //2. 把参数传递给接口
   const res = await getCourse({
     category,
     page,
     size,
   });
- 
 
-//筛选符合分类的课程
-//3. 把返回的数组结果进行filter过滤和category对比，然后将过滤结果返回给data.list
+  //筛选符合分类的课程
+  //3. 把返回的数组结果进行filter过滤和category对比，然后将过滤结果返回给data.list
   data.list = res?.data.list.filter((item) => {
     return item.category === category;
   });
 
-//4. 将返回的总数赋值给data
-  data.total = res?.total;
+  //4. 将返回的总数赋值给data
+  return (data.total = res?.data.total[0].total);
 };
-onMounted(()=>{
-  getCourseData()
 
-  /**
-   * 监听课程类目tab切换
-   */
-  emitter.con('course',(val)=>{
+/**
+ * 课程编辑的方法
+ */
+const changeCourseData = async (query) => {
+  // 1.从参数中先解析赋值。
+  const { title, price, id } = query;
+  // 2.调用接口传入参数
+  const res = await changeCourse({ title, price, id });
+  // 3.判断返回值，是否成功
+  if (res?.message) {
+    ElMessage({
+      message: res.message,
+      type: "success",
+    });
+  }
+};
 
-  })
-})
+onMounted(() => {
+  getCourseData();
+
+  //监听课程类目tab切换
+  emitter.on("course", (val) => {
+    data.sideCategory = val;
+    data.page = 1;
+    getCourseData({ category: val, page: 1 });
+  });
+});
 </script>
 
 <style lang="less" scoped>

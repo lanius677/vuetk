@@ -13,7 +13,7 @@ exports.listVideo = (req, res) => {
   const pageSql = 'SELECT * FROM video WHERE del=0 AND category=? ORDER BY id LIMIT ?,?'
 
   //查询课程总数
-  const totalSql = 'SELECT count(*) as totle FROM video WHERE del=0 and category=?'
+  const totalSql = 'SELECT count(*) as total FROM video WHERE del=0 and category=?'
 
   db.query(pageSql, [category, Number(page), Number(size)], (err, resPage) => {
     if (err) {
